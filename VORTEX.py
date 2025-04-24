@@ -11,33 +11,38 @@ import sys
 import webbrowser
 from colorama import Fore, init
 
+# Initialisation de colorama
 init(autoreset=True)
 
+# Vérifie si l'utilisateur a les droits administrateur
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
         return False
 
+# Si pas administrateur, redémarre le script en mode administrateur
 if not is_admin():
     print(Fore.RED + "Restarting as admin...")
     ctypes.windll.shell32.ShellExecuteW(
         None, "runas", sys.executable, __file__, None, 1)
     sys.exit()
 
+# Demande le nom d'utilisateur de Windows
 os.system('title [LOCKED]:')
 useer = input("The program is locked, Please enter your Windows username: ").strip()
 
-os.system('title [UNLOCKED]                                                                          // WE LOVE CHEATING //')
+os.system('title [UNLOCKED]                                                                          // WE LOVE CHEATING //') #Renome la fenetre par // WE LOVE CHEATING //
 
 def disconnect_second_screen():
     print(Fore.YELLOW + "Disconnecting second screen...")
-    subprocess.run(['DisplaySwitch.exe', '/external'])
+    subprocess.run(['DisplaySwitch.exe', '/external'])  # Cela bascule l'affichage sur un seul écran (l'écran principal)
     print(Fore.GREEN + "Second screen disconnected.")
+
 
 def reconnect_second_screen():
     print(Fore.YELLOW + "Reconnecting second screen...")
-    subprocess.run(['DisplaySwitch.exe', '/extend'])
+    subprocess.run(['DisplaySwitch.exe', '/extend'])  # Basculer en mode étendu (pour utiliser les deux écrans)
     print(Fore.GREEN + "Second screen reconnected in extended mode.")
 
 def manage_second_screen():
@@ -50,22 +55,23 @@ def manage_second_screen():
         choice = input(Fore.CYAN + "Enter your choice (1-3): ")
 
         if choice == '1':
-            disconnect_second_screen()
-            break
+            disconnect_second_screen()  # Fonction pour déconnecter le second écran
+            break  # Retour au menu principal après l'action
         elif choice == '2':
-            reconnect_second_screen()
-            break
+            reconnect_second_screen()  # Fonction pour reconnecter le second écran
+            break  # Retour au menu principal après l'action
         elif choice == '3':
             print(Fore.YELLOW + "Going back to main menu...\n")
-            break
+            break  # Retour au menu principal
         else:
             print(Fore.RED + "Invalid choice. Please try again.")
 
-def clean_disk():
-    temp_dir = os.getenv('TEMP')
+def clean_disk():  # Nettoyage du dossier TEMP sans l'outil Disk Cleanup
+    temp_dir = os.getenv('TEMP')  # Récupère le chemin du dossier TEMP
     print(Fore.YELLOW + f"Cleaning files in {temp_dir}...")
 
     try:
+        # Supprimer tous les fichiers et dossiers dans le dossier %TEMP%
         for root, dirs, files in os.walk(temp_dir, topdown=False):
             for name in files:
                 try:
@@ -79,22 +85,31 @@ def clean_disk():
                     shutil.rmtree(dir_path)
                 except Exception as e:
                     print(Fore.RED + f"Error deleting directory {dir_path}: {e}")
+
         print(Fore.GREEN + "Temporary files deleted successfully.")
+
     except Exception as e:
         print(Fore.RED + f"An error occurred while cleaning TEMP files: {e}")
 
+
+# Fonction pour régler l'opacité de la fenêtre de la console
 def set_opacity(opacity):
     hwnd = ctypes.windll.kernel32.GetConsoleWindow()
     alpha = int(255 * (opacity / 100))
     ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, 0, alpha, 0x00000002)
 
+# Fonction pour cacher la fenêtre et attendre la réactivation
 def wait_for_reactivation():
+
     hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+
+    # Cacher la fenêtre au lieu de la minimiser
     win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
 
     print(Fore.CYAN + "\n[!] Program is now running in the background. Press '/' to reopen the menu.")
     while True:
         if keyboard.is_pressed('/'):
+            # Restaurer la fenêtre
             win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
             os.system('cls' if os.name == 'nt' else 'clear')
             print(Fore.GREEN + "Reopening launcher...")
@@ -102,6 +117,7 @@ def wait_for_reactivation():
             return
         time.sleep(0.1)
 
+# Fonction pour trouver le chemin de Discord
 def find_discord_exe(useer):
     base_path = fr"C:\Users\{useer}\AppData\Local\Discord"
     for folder in os.listdir(base_path):
@@ -111,6 +127,7 @@ def find_discord_exe(useer):
                 return path
     return None
 
+# Fonction pour télécharger et installer une application
 def install_app(app_name):
     apps = {
         "chrome": {
@@ -128,6 +145,10 @@ def install_app(app_name):
         "bloxstrap": {
             "url": "https://github.com/bloxstraplabs/bloxstrap/releases/download/v2.9.0/Bloxstrap-v2.9.0.exe",
             "file": "Bloxstrap-v2.9.0.exe"
+        },
+        "Deezer":{
+            "url": "https://www.deezer.com/desktop/download?platform=win32&architecture=x86",
+            "file": "DeezerDesktopSetup_7.0.60.exe"
         }
     }
 
@@ -145,6 +166,7 @@ def install_app(app_name):
     else:
         print(Fore.RED + "Unknown app.")
 
+# Réglage de l'opacité de la fenêtre
 set_opacity(72)
 os.system('cls' if os.name == 'nt' else 'clear')
 print(Fore.MAGENTA + "// DEVELOPPED BY LOUCHATFLUFF //")
@@ -153,6 +175,7 @@ print(Fore.RED + "THIS SOFTWARE IS FREE, IF YOU PAYED FOR IT: PLEASE RETURN IT")
 time.sleep(5)
 os.system('cls' if os.name == 'nt' else 'clear')
 
+# Menu principal
 def main_menu():
     while True:
         print(Fore.GREEN + "What do u want to do:")
@@ -166,10 +189,13 @@ def main_menu():
 
         main_choice = input(Fore.CYAN + "Enter your choice (1-6): ")
 
-        if main_choice == '6':
+        
+        
+        if main_choice == '6':  # Option pour déconnecter le second écran
             manage_second_screen()
 
         elif main_choice == '1':
+            # Menu pour ouvrir des apps
             while True:
                 print(Fore.YELLOW + "\nChoose an app to open:")
                 print(Fore.CYAN + "1: Riot")
@@ -179,9 +205,10 @@ def main_menu():
                 print(Fore.CYAN + "5: Lunar Client")
                 print(Fore.CYAN + "6: Opera")
                 print(Fore.CYAN + "7: Chrome")
-                print(Fore.YELLOW + "8: Menu")
+                print(Fore.CYAN + "8: Deezer")
+                print(Fore.YELLOW + "9: Menu")
 
-                choice = input(Fore.CYAN + "Enter your choice (1-8): ")
+                choice = input(Fore.CYAN + "Enter your choice (1-9): ")
 
                 apps = {
                     '1': r"C:\Riot Games\Riot Client\RiotClientServices.exe",
@@ -190,9 +217,11 @@ def main_menu():
                     '5': fr"C:\Users\{useer}\AppData\Local\Programs\Lunar Client\Lunar Client.exe",
                     '6': fr"C:\Users\{useer}\AppData\Local\Programs\Opera\opera.exe",
                     '7': fr"C:\Users\{useer}\AppData\Local\Programs\Google\Chrome\Application\chrome.exe",
+                    '8': fr"C:\Users\{useer}\AppData\Local\Programs\deezer-desktop\Deezer.exe"
                 }
 
                 if choice == '4':
+                    # Ouvre Discord
                     discord_path = find_discord_exe(useer)
                     if discord_path:
                         print(Fore.GREEN + "Opening Discord...")
@@ -202,7 +231,8 @@ def main_menu():
                 elif choice in apps:
                     print(Fore.GREEN + f"Opening app {choice}...")
                     subprocess.Popen([apps[choice]])
-                elif choice == '8':
+
+                elif choice == '9':                                                         #Fonction pr que le menu fonctione ce ptit FDP
                     print(Fore.YELLOW + "Going back to main menu...\n")
                     os.system('cls' if os.name == 'nt' else 'clear')
                     break
@@ -211,10 +241,11 @@ def main_menu():
 
         elif main_choice == '7':
             print(Fore.RED + "Closing the program...")
-            os.system('cls')
+            os.system('cls')  # Vider l'écran (facultatif)
             sys.exit()
 
         elif main_choice == '2':
+            # Optimisation des apps
             print(Fore.GREEN + "Optimising your system...")
             clean_disk()
             processes = ["steam.exe", "opera.exe", "sunshine.exe", "sunshinesvc.exe", "Spotify.exe", "discord.exe"]
@@ -230,37 +261,44 @@ def main_menu():
 
             print(Fore.GREEN + "Done.\n")
             print(Fore.YELLOW + "Press Enter to continue...")
-            keyboard.read_event()
+            keyboard.read_event()  # Attend une touche pour continuer, après l'optimisation
 
             os.system('cls' if os.name == 'nt' else 'clear')
 
         elif main_choice == '3':
+            # Menu pour installer des apps
             print(Fore.YELLOW + "Choose an app to install:")
             print(Fore.CYAN + "1: Google Chrome")
             print(Fore.CYAN + "2: Opera Browser")
             print(Fore.CYAN + "3: Roblox Player")
             print(Fore.CYAN + "4: Bloxstrap")
+            print(Fore.CYAN + "5: Deezer")
             install_choice = input(Fore.CYAN + "Enter your choice (1-4): ")
-            apps_map = {'1': 'chrome', '2': 'opera', '3': 'roblox', '4': 'bloxstrap'}
+            apps_map = {'1': 'chrome', '2': 'opera', '3': 'roblox', '4': 'bloxstrap','5': 'Deezer'}
             install_app(apps_map.get(install_choice, ''))
 
         elif main_choice == '4':
+            # Minimise le programme
             wait_for_reactivation()
+
 
         elif main_choice == '9':
             os.system('cls' if os.name == 'nt' else 'clear')
 
-        elif main_choice == '5':
+        elif main_choice == '5':  # Option "Ping"
             print(Fore.YELLOW + "Enter the website URL you want to visit:")
             website = input(Fore.CYAN + "Enter URL (example: https://www.google.com): ").strip()
 
+            # Ouvrir le site web dans le navigateur par défaut
             if website:
                 print(Fore.GREEN + f"Opening website: {website}")
                 webbrowser.open(website)
             else:
                 print(Fore.RED + "Invalid URL. Please try again.")
+
         else:
             print(Fore.RED + "Invalid choice.")
 
+# Lancer le menu principal
 while True:
     main_menu()
