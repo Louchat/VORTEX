@@ -9,30 +9,95 @@ import win32gui
 import win32con
 import sys
 import webbrowser
+import getpass
 from colorama import Fore, init
 
 # Initialisation de colorama
 init(autoreset=True)
 
-# Vérifie si l'utilisateur a les droits administrateur
+
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
         return False
 
-# Si pas administrateur, redémarre le script en mode administrateur
 if not is_admin():
     print(Fore.RED + "Restarting as admin...")
+    params = ' '.join([f'"{arg}"' for arg in sys.argv])
     ctypes.windll.shell32.ShellExecuteW(
-        None, "runas", sys.executable, __file__, None, 1)
+        None, "runas", sys.executable, params, None, 1)
     sys.exit()
+
 
 # Demande le nom d'utilisateur de Windows
 os.system('title [LOCKED]:')
-useer = input("The program is locked, Please enter your Windows username: ").strip()
+useer = os.getlogin()
+def verify_user():
+    user = getpass.getuser()
+    print(f"\nUser found: {user}")
+    print("Is it correct?")
+    print("1. Yes (unlock automatically)")
+    print("2. No (unlock manually)")
+
+    choice = input("Enter your choice (1/2): ").strip()
+
+    while choice not in ["1", "2"]:
+        choice = input("Invalid input. Please enter 1 or 2: ").strip()
+
+    if choice == "1":
+        print("Unlocking automatically...")
+        time.sleep(1)  # Tu peux le retirer ou le garder comme effet visuel
+        return user
+    else:
+        manual_user = input("Enter your username manually: ").strip()
+        print(f"Manual unlock for user: {manual_user}")
+        return manual_user
+
+# Exemple d'utilisation :
+current_user = verify_user()
+
+
 
 os.system('title [UNLOCKED]                                                                          // WE LOVE CHEATING //') #Renome la fenetre par // WE LOVE CHEATING //
+
+def clear_console():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def execute_command():
+    while True:
+        print(Fore.YELLOW + "Enter the CMD command you want to execute:")
+        cmd = input(Fore.CYAN + "> ")
+        if cmd.lower() == 'exit':
+            print(Fore.YELLOW + "Returning to main menu...\n")
+            break
+        if cmd.strip() == "":
+            continue
+        try:
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            if result.stdout:
+                print(Fore.GREEN + result.stdout)
+            if result.stderr:
+                print(Fore.RED + result.stderr)
+            print(Fore.MAGENTA + "Command has been executed.")
+        except Exception as e:
+            print(Fore.RED + f"Error executing command: {e}")
+
+        # Proposer le choix entre exécuter une autre commande ou revenir au menu principal
+        while True:
+            print(Fore.YELLOW + "\nChoose an option:")
+            print(Fore.YELLOW + "1: Execute another command")
+            print(Fore.YELLOW + "2: Go back to the main menu")
+            choice = input(Fore.CYAN + "> ").strip()
+            if choice == '1':
+                break  # Sort de la boucle interne et revient au début pour une nouvelle commande
+            elif choice == '2':
+                print(Fore.YELLOW + "Returning to main menu...\n")
+                return  # Quitte la fonction pour revenir au menu principal
+            else:
+                print(Fore.RED + "Invalid option, please choose 1 or 2.")
+
 
 def disconnect_second_screen():
     print(Fore.YELLOW + "Disconnecting second screen...")
@@ -87,6 +152,11 @@ def clean_disk():  # Nettoyage du dossier TEMP sans l'outil Disk Cleanup
                     print(Fore.RED + f"Error deleting directory {dir_path}: {e}")
 
         print(Fore.GREEN + "Temporary files deleted successfully.")
+        
+        # Lancer la commande CMD taskkill pour fermer explorer.exe
+        print(Fore.YELLOW + "Killing explorer.exe process...")
+        subprocess.run("taskkill /f /im explorer.exe", shell=True)
+        print(Fore.GREEN + "Explorer.exe has been terminated.")
 
     except Exception as e:
         print(Fore.RED + f"An error occurred while cleaning TEMP files: {e}")
@@ -111,7 +181,7 @@ def wait_for_reactivation():
         if keyboard.is_pressed('/'):
             # Restaurer la fenêtre
             win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
-            os.system('cls' if os.name == 'nt' else 'clear')
+            clear_console()
             print(Fore.GREEN + "Reopening launcher...")
             time.sleep(0.5)
             return
@@ -168,13 +238,12 @@ def install_app(app_name):
 
 # Réglage de l'opacité de la fenêtre
 set_opacity(72)
-os.system('cls' if os.name == 'nt' else 'clear')
+clear_console()
 print(Fore.MAGENTA + "// DEVELOPPED BY LOUCHATFLUFF //")
 time.sleep(3)
 print(Fore.RED + "THIS SOFTWARE IS FREE, IF YOU PAYED FOR IT: PLEASE RETURN IT")
 time.sleep(5)
-os.system('cls' if os.name == 'nt' else 'clear')
-
+clear_console()
 # Menu principal
 def main_menu():
     while True:
@@ -185,9 +254,10 @@ def main_menu():
         print(Fore.YELLOW + "4: Minimise")
         print(Fore.YELLOW + "5: Ping")
         print(Fore.YELLOW + "6: Manage second screen")
-        print(Fore.RED + "7: Close")
+        print(Fore.YELLOW + "7: Execute CMD command")
+        print(Fore.RED + "8: Close")
 
-        main_choice = input(Fore.CYAN + "Enter your choice (1-6): ")
+        main_choice = input(Fore.CYAN + "Enter your choice (1-8): ")
 
         
         
@@ -212,7 +282,7 @@ def main_menu():
 
                 apps = {
                     '1': r"C:\Riot Games\Riot Client\RiotClientServices.exe",
-                    '2': fr"C:\Users\{useer}\Documents\Bloxstrap-v2.9.0",
+                    '2': fr"C:\Users\{useer}\Documents\Bloxstrap-v2.9.0.exe",
                     '3': fr"C:\Users\{useer}\AppData\Roaming\Spotify\Spotify.exe",
                     '5': fr"C:\Users\{useer}\AppData\Local\Programs\Lunar Client\Lunar Client.exe",
                     '6': fr"C:\Users\{useer}\AppData\Local\Programs\Opera\opera.exe",
@@ -239,10 +309,13 @@ def main_menu():
                 else:
                     print(Fore.RED + "Invalid choice.")
 
-        elif main_choice == '7':
+        elif main_choice == '8':
             print(Fore.RED + "Closing the program...")
             os.system('cls')  # Vider l'écran (facultatif)
             sys.exit()
+
+        elif main_choice == "7":    
+            execute_command()
 
         elif main_choice == '2':
             # Optimisation des apps
@@ -263,7 +336,7 @@ def main_menu():
             print(Fore.YELLOW + "Press Enter to continue...")
             keyboard.read_event()  # Attend une touche pour continuer, après l'optimisation
 
-            os.system('cls' if os.name == 'nt' else 'clear')
+            clear_console()
 
         elif main_choice == '3':
             # Menu pour installer des apps
@@ -282,8 +355,26 @@ def main_menu():
             wait_for_reactivation()
 
 
-        elif main_choice == '9':
-            os.system('cls' if os.name == 'nt' else 'clear')
+        elif main_choice == 'admin.clear':
+            clear_console()
+
+        elif main_choice == 'admin':
+            clear_console()
+            print(Fore.RED + "You entered Admin commands tools:")
+            print(Fore.MAGENTA + "Commands available:")
+            print(" - admin.clear : clear the console")
+            print(" - exit       : return to main menu")
+
+            while True:
+                cmd = input(Fore.CYAN + "admin> ").strip().lower()
+                if cmd == 'admin.clear':
+                    clear_console()
+                elif cmd == 'exit':
+                    clear_console()
+                    break
+                else:
+                    print(Fore.YELLOW + f"Unknown command: {cmd}")
+
 
         elif main_choice == '5':  # Option "Ping"
             print(Fore.YELLOW + "Enter the website URL you want to visit:")
