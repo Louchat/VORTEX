@@ -180,7 +180,7 @@ def update_vortex():
         response = requests.get(repo_url)
         response.raise_for_status()
 
-        with open(local_file, 'w', encoding='utf-8') as f:
+        with open(local_file, 'w', encoding='utf-8', newline='\n') as f:
             f.write(response.text)
 
         print(f"Update successfully downloaded in: {local_file}")
@@ -192,7 +192,7 @@ def update_vortex():
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "10.4"  # Local version
+    version = "10.6"  # Local version
     print(f"Current VORTEX version: {version}")
 
     
@@ -452,7 +452,13 @@ def main_menu():
                     discord_path = find_discord_exe(useer)
                     if discord_path:
                         print(Fore.GREEN + "Opening Discord...")
-                        subprocess.Popen([discord_path])
+                        subprocess.Popen(
+                            [discord_path],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL,
+                            creationflags=subprocess.CREATE_NO_WINDOW
+                        )
+
                     else:
                         print(Fore.RED + "Discord not found.")
                 elif choice in apps:
