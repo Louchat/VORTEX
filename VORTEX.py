@@ -71,7 +71,7 @@ def verify_user():
 
     if saved_user:
         print(Fore.GREEN + f"User already verified: {saved_user}")
-        time.sleep(1)
+        time.sleep(0.6)
         return saved_user
 
     user = getpass.getuser()
