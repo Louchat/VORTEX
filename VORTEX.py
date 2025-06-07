@@ -192,7 +192,7 @@ def update_vortex():
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "10.6"  # Local version
+    version = "10.7"  # Local version
     print(f"Current VORTEX version: {version}")
 
     
@@ -348,8 +348,9 @@ def find_discord_exe(useer):
 
 # Function to download and install an application
 def install_app(app_name):
-    apps = {
 
+    
+    apps = {
         "chrome": {
             "url": "https://dl.google.com/chrome/install/375.126/chrome_installer.exe",
             "file": "chrome_installer.exe"
@@ -367,12 +368,28 @@ def install_app(app_name):
             "file": "Bloxstrap-v2.9.0.exe"
         },
         "riot": {
-            "url":"https://valorant.secure.dyn.riotcdn.net/channels/public/x/installer/current/live.live.ap.exe",
-            "file":"Install VALORANT.exe"
+            "url": "https://valorant.secure.dyn.riotcdn.net/channels/public/x/installer/current/live.live.ap.exe",
+            "file": "Install_VALORANT.exe"
         },
-        "deezer":{
-            "url": "https://www.deezer.com/desktop/download?platform=win32&architecture=x86",
-            "file": "DeezerDesktopSetup_7.0.60.exe"
+        "deezer": {
+            "url": "https://cdns-files.deezer.com/builds/deezer-desktop/7.0.60/win32/DeezerSetup.exe",
+            "file": "DeezerSetup.exe"
+        },
+        "spotify": {
+            "url": "https://download.scdn.co/SpotifySetup.exe",
+            "file": "SpotifySetup.exe"
+        },
+        "steam": {
+            "url": "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe",
+            "file": "SteamSetup.exe"
+        },
+        "discord": {
+            "url": "https://dl.discordapp.net/distro/app/stable/win/x64/DiscordSetup.exe",
+            "file": "DiscordSetup.exe"
+        },
+        "vencord": {
+            "url": "https://github.com/Vencord/Installer/releases/latest/download/VencordInstaller.exe",
+            "file": "VencordInstaller.exe"
         }
     }
 
@@ -381,14 +398,24 @@ def install_app(app_name):
         print(Fore.CYAN + f"Downloading {app_name} installer...")
         urllib.request.urlretrieve(data["url"], data["file"])
         print(Fore.CYAN + "Download complete!")
+        print(Fore.CYAN + f"Downloaded file size: {os.path.getsize(data['file'])} bytes")
 
-        print(Fore.CYAN + "Running the installer...")
-        subprocess.run([data["file"]])
-
-        os.remove(data["file"])
-        print(Fore.CYAN + "Installer removed after installation.")
+        try:
+            print(Fore.CYAN + "Launching installer...")
+            subprocess.Popen(
+                [data["file"]],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            time.sleep(5)
+            os.remove(data["file"])
+            print(Fore.CYAN + "Installer removed after installation.")
+        except Exception as e:
+            print(Fore.RED + f"Failed to run installer: {e}")
     else:
         print(Fore.RED + "Unknown app.")
+
 
 # Set window opacity
 set_opacity(72)
@@ -413,7 +440,7 @@ def main_menu():
         print(Fore.RED + "9: Restart")
                 
 
-        main_choice = input(Fore.CYAN + "Enter your choice (1-8): ")
+        main_choice = input(Fore.CYAN + "Enter your choice (1-9): ")
 
         
         
@@ -435,7 +462,7 @@ def main_menu():
                 print(Fore.YELLOW + "9: Menu")
                 
 
-                choice = input(Fore.CYAN + "Enter your choice (1-10): ")
+                choice = input(Fore.CYAN + "Enter your choice (1-9): ")
 
                 apps = {
                     '1': r"C:\Riot Games\Riot Client\RiotClientServices.exe",
@@ -484,7 +511,7 @@ def main_menu():
             # App optimization
             print(Fore.GREEN + "Optimising your system...")
             clean_disk()
-            processes = ["steam.exe", "opera.exe", "sunshine.exe", "sunshinesvc.exe", "Spotify.exe", "discord.exe", "rainmeter.exe"]
+            processes = ["steam.exe", "opera.exe", "sunshine.exe", "sunshinesvc.exe", "Spotify.exe", "discord.exe", "rainmeter.exe", "deezer.exe"]
 
             for proc in processes:
                 print(Fore.CYAN + f"Trying to close {proc}...")
@@ -500,19 +527,29 @@ def main_menu():
             keyboard.read_event()  # Wait for user input before continuing
 
             clear_console() 
-
         elif main_choice == '3':
             # Menu to install apps
+            apps_map = {
+                '1': 'chrome',
+                '2': 'opera',
+                '3': 'roblox',
+                '4': 'bloxstrap',
+                '5': 'deezer',
+                '6': 'riot',
+                '7': 'spotify',
+                '8': 'steam',
+                '9': 'discord',
+                '10': 'vencord'
+            }
+
+            # Affichage dynamique :
             print(Fore.YELLOW + "Choose an app to install:")
-            print(Fore.CYAN + "1: Google Chrome")
-            print(Fore.CYAN + "2: Opera Browser")
-            print(Fore.CYAN + "3: Roblox Player")
-            print(Fore.CYAN + "4: Bloxstrap")
-            print(Fore.CYAN + "5: Deezer")
-            print(Fore.CYAN + "6: Riot Client")
-            install_choice = input(Fore.CYAN + "Enter your choice (1-6): ")
-            apps_map = {'1': 'chrome', '2': 'opera', '3': 'roblox', '4': 'bloxstrap','5': 'deezer','6': 'riot'}
-            install_app(apps_map.get(install_choice, ''))
+            for num, app in apps_map.items():
+                print(Fore.CYAN + f"{num}: {app.capitalize()}")
+
+            choice = input(Fore.CYAN + "Enter your choice (1-10): ").strip()
+            install_app(apps_map.get(choice, ''))
+
 
         elif main_choice == '4':
             # Minimize the program
