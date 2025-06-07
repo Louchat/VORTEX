@@ -111,6 +111,21 @@ os.system('title [UNLOCKED]                                                     
 
 
 
+def apply_update():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    update_file = os.path.join(current_dir, "Update_Vortex", "VORTEX.py")
+    target_file = os.path.join(current_dir, "VORTEX.py")
+
+    if os.path.exists(update_file):
+        try:
+            shutil.copy2(update_file, target_file)
+            print(Fore.GREEN + "Update applied successfully: VORTEX.py overwritten.")
+            # Optionnel : supprimer le dossier update
+            # shutil.rmtree(os.path.join(current_dir, "Update_Vortex"))
+        except Exception as e:
+            print(Fore.RED + f"Error applying update: {e}")
+    else:
+        print(Fore.RED + "Update file not found. Cannot apply update.")
 
 def get_github_version():
     try:
@@ -164,17 +179,20 @@ def update_vortex():
         print("Downloading the latest version...")
         response = requests.get(repo_url)
         response.raise_for_status()
-        
+
         with open(local_file, 'w', encoding='utf-8') as f:
             f.write(response.text)
-        
+
         print(f"Update successfully downloaded in: {local_file}")
+
+        apply_update()  # <-- ici on applique la mise à jour
+
         print("Restart the program to apply changes.")
     except Exception as e:
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "10"  # Local version
+    version = "10.4"  # Local version
     print(f"Current VORTEX version: {version}")
 
     
@@ -331,6 +349,7 @@ def find_discord_exe(useer):
 # Function to download and install an application
 def install_app(app_name):
     apps = {
+
         "chrome": {
             "url": "https://dl.google.com/chrome/install/375.126/chrome_installer.exe",
             "file": "chrome_installer.exe"
@@ -347,7 +366,11 @@ def install_app(app_name):
             "url": "https://github.com/bloxstraplabs/bloxstrap/releases/download/v2.9.0/Bloxstrap-v2.9.0.exe",
             "file": "Bloxstrap-v2.9.0.exe"
         },
-        "Deezer":{
+        "riot": {
+            "url":"https://valorant.secure.dyn.riotcdn.net/channels/public/x/installer/current/live.live.ap.exe",
+            "file":"Install VALORANT.exe"
+        },
+        "deezer":{
             "url": "https://www.deezer.com/desktop/download?platform=win32&architecture=x86",
             "file": "DeezerDesktopSetup_7.0.60.exe"
         }
@@ -387,7 +410,7 @@ def main_menu():
         print(Fore.YELLOW + "6: Manage second screen")
         print(Fore.YELLOW + "7: Execute CMD command")
         print(Fore.YELLOW + "8: Check latest github update")
-        print(Fore.RED + "9: Close")
+        print(Fore.RED + "9: Restart")
                 
 
         main_choice = input(Fore.CYAN + "Enter your choice (1-8): ")
@@ -412,7 +435,7 @@ def main_menu():
                 print(Fore.YELLOW + "9: Menu")
                 
 
-                choice = input(Fore.CYAN + "Enter your choice (1-9): ")
+                choice = input(Fore.CYAN + "Enter your choice (1-10): ")
 
                 apps = {
                     '1': r"C:\Riot Games\Riot Client\RiotClientServices.exe",
@@ -444,10 +467,10 @@ def main_menu():
                     print(Fore.RED + "Invalid choice.")
 
         elif main_choice == '9':
-            print(Fore.RED + "Closing the program...")
-            os.system('cls')  # Clear screen (optional)
-            sys.exit()
-
+            print(Fore.RED + "Restarting the program...")
+            python = sys.executable
+            subprocess.Popen([python] + sys.argv)
+            sys.exit(0)
         elif main_choice == "7":    
             execute_command()
 
@@ -480,8 +503,9 @@ def main_menu():
             print(Fore.CYAN + "3: Roblox Player")
             print(Fore.CYAN + "4: Bloxstrap")
             print(Fore.CYAN + "5: Deezer")
-            install_choice = input(Fore.CYAN + "Enter your choice (1-4): ")
-            apps_map = {'1': 'chrome', '2': 'opera', '3': 'roblox', '4': 'bloxstrap','5': 'Deezer'}
+            print(Fore.CYAN + "6: Riot Client")
+            install_choice = input(Fore.CYAN + "Enter your choice (1-6): ")
+            apps_map = {'1': 'chrome', '2': 'opera', '3': 'roblox', '4': 'bloxstrap','5': 'deezer','6': 'riot'}
             install_app(apps_map.get(install_choice, ''))
 
         elif main_choice == '4':
