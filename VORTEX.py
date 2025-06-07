@@ -134,7 +134,7 @@ def update_vortex():
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "9.5"  # Local version
+    version = "9.6"  # Local version
     print(f"Current VORTEX version: {version}")
 
     
@@ -416,7 +416,7 @@ def main_menu():
             # App optimization
             print(Fore.GREEN + "Optimising your system...")
             clean_disk()
-            processes = ["steam.exe", "opera.exe", "sunshine.exe", "sunshinesvc.exe", "Spotify.exe", "discord.exe"]
+            processes = ["steam.exe", "opera.exe", "sunshine.exe", "sunshinesvc.exe", "Spotify.exe", "discord.exe", "rainmeter.exe"]
 
             for proc in processes:
                 print(Fore.CYAN + f"Trying to close {proc}...")
@@ -431,7 +431,7 @@ def main_menu():
             print(Fore.YELLOW + "Press Enter to continue...")
             keyboard.read_event()  # Wait for user input before continuing
 
-            clear_console()
+            clear_console() 
 
         elif main_choice == '3':
             # Menu to install apps
