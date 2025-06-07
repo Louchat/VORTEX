@@ -10,6 +10,7 @@ import win32con
 import sys
 import webbrowser
 import getpass
+import requests
 from colorama import Fore, init
 
 # Initialisation de colorama
@@ -63,6 +64,55 @@ os.system('title [UNLOCKED]                                                     
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def get_latest_commit_date():
+    # GitHub API to get the latest commit on the VORTEX.py file
+    api_url = "https://api.github.com/repos/Louchat/VORTEX/commits?path=VORTEX.py&page=1&per_page=1"
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        data = response.json()
+        if data:
+            commit_date = data[0]['commit']['committer']['date']
+            # Simple formatting, e.g. 2025-06-07T12:34:56Z -> 2025-06-07
+            return commit_date.split("T")[0]
+        else:
+            return None
+    except Exception as e:
+        print(f"Error retrieving update date: {e}")
+        return None
+
+def update_vortex():
+    repo_url = "https://raw.githubusercontent.com/Louchat/VORTEX/main/VORTEX.py"
+    local_file = "VORTEX.py"
+
+    choice = input("Do you want to install the latest version of VORTEX? (y/n): ").strip().lower()
+    if choice != 'y':
+        print("Update cancelled.")
+        return
+
+    try:
+        print("Downloading the latest version...")
+        response = requests.get(repo_url)
+        response.raise_for_status()
+
+        with open(local_file, 'w', encoding='utf-8') as f:
+            f.write(response.text)
+
+        print("Update completed successfully! Please restart the program to apply changes.")
+    except Exception as e:
+        print(f"Error during update: {e}")
+
+def show_version_and_update():
+    version = "1.0"  # Your current version, update as needed
+    last_update = get_latest_commit_date()
+    print(f"Current VORTEX version: {version}")
+    if last_update:
+        print(f"Last update on GitHub: {last_update}")
+    else:
+        print("Unable to retrieve last update date.")
+
+    update_vortex()
 
 
 def execute_command():
@@ -256,6 +306,8 @@ def main_menu():
         print(Fore.YELLOW + "6: Manage second screen")
         print(Fore.YELLOW + "7: Execute CMD command")
         print(Fore.RED + "8: Close")
+        print("9. Voir la dernière mise à jour GitHub")
+                
 
         main_choice = input(Fore.CYAN + "Enter your choice (1-8): ")
 
@@ -277,6 +329,7 @@ def main_menu():
                 print(Fore.CYAN + "7: Chrome")
                 print(Fore.CYAN + "8: Deezer")
                 print(Fore.YELLOW + "9: Menu")
+                
 
                 choice = input(Fore.CYAN + "Enter your choice (1-9): ")
 
@@ -374,6 +427,10 @@ def main_menu():
                     break
                 else:
                     print(Fore.YELLOW + f"Unknown command: {cmd}")
+
+        elif main_choice == '9':
+            clear_console()
+            show_version_and_update()
 
 
         elif main_choice == '5':  # Option "Ping"
