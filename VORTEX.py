@@ -19,6 +19,9 @@ import getpass
 import requests
 from colorama import Fore, init
 
+def clear_console():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 # Initialize colorama
 init(autoreset=True)
 
@@ -42,12 +45,12 @@ os.system('title [LOCKED]:')
 useer = os.getlogin()
 def verify_user():
     user = getpass.getuser()
-    print(f"\nUser found: {user}")
-    print("Is it correct?")
+    print(Fore.GREEN + f"User found: {user}")
+    print(Fore.YELLOW + "Is it correct?")
     print("1. Yes (unlock automatically)")
     print("2. No (unlock manually)")
 
-    choice = input("Enter your choice (1/2): ").strip()
+    choice = input(Fore.RED + "Enter your choice (1/2): ").strip()
 
     while choice not in ["1", "2"]:
         choice = input("Invalid input. Please enter 1 or 2: ").strip()
@@ -68,8 +71,6 @@ current_user = verify_user()
 
 os.system('title [UNLOCKED]                                                                          // WE LOVE CHEATING //') #Renome la fenetre par // WE LOVE CHEATING //
 
-def clear_console():
-    os.system('cls' if os.name == 'nt' else 'clear')
 
 def get_github_version():
     try:
@@ -133,7 +134,7 @@ def update_vortex():
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "9.4"  # Local version
+    version = "9.5"  # Local version
     print(f"Current VORTEX version: {version}")
 
     
