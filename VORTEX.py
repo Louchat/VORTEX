@@ -15,6 +15,7 @@ import win32gui
 import win32con
 import sys
 import webbrowser
+import itertools
 import getpass
 import requests
 from colorama import Fore, init
@@ -43,9 +44,42 @@ if not is_admin():
 # Ask for the Windows username
 os.system('title [LOCKED]:')
 useer = os.getlogin()
+
+def loading_animation(text="Searching for an user", duration=3):
+    spinner = itertools.cycle(["|", "/", "-", "\\"])
+    end_time = time.time() + duration
+    while time.time() < end_time:
+        sys.stdout.write(Fore.YELLOW + f"\r{text} {next(spinner)} ")
+        sys.stdout.flush()
+        time.sleep(0.2)
+    sys.stdout.write("\r" + " " * (len(text) + 4) + "\r")  # clean line
+
+
+
+def load_user():
+    if os.path.exists("user.lock"):
+        with open("user.lock", "r") as file:
+            return file.read().strip()
+    return None
+
+def save_user(username):
+    with open("user.lock", "w") as file:
+        file.write(username)
+
 def verify_user():
+    saved_user = load_user()
+
+    if saved_user:
+        print(Fore.GREEN + f"User already verified: {saved_user}")
+        time.sleep(1)
+        return saved_user
+
     user = getpass.getuser()
+
+    loading_animation()
+
     print(Fore.GREEN + f"User found: {user}")
+    time.sleep(0.3)
     print(Fore.YELLOW + "Is it correct?")
     print("1. Yes (unlock automatically)")
     print("2. No (unlock manually)")
@@ -57,19 +91,25 @@ def verify_user():
 
     if choice == "1":
         print("Unlocking automatically...")
-        time.sleep(1)  # Optional visual delay
+        time.sleep(1)
+        save_user(user)
         return user
     else:
         manual_user = input("Enter your username manually: ").strip()
         print(f"Manual unlock for user: {manual_user}")
+        save_user(manual_user)
         return manual_user
 
-# Example usage :
+# Example usage
 current_user = verify_user()
 
 
 
+
+
 os.system('title [UNLOCKED]                                                                          // WE LOVE CHEATING //') #Renome la fenetre par // WE LOVE CHEATING //
+
+
 
 
 def get_github_version():
@@ -134,7 +174,7 @@ def update_vortex():
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "9.6"  # Local version
+    version = "10"  # Local version
     print(f"Current VORTEX version: {version}")
 
     
@@ -154,7 +194,6 @@ def show_version_and_update():
     else:
         print(Fore.RED + "Could not check for the latest version.")
     update_vortex()
-
 
 
 def execute_command():
