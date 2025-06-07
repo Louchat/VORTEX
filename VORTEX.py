@@ -82,29 +82,41 @@ def get_latest_commit_date():
         print(f"Error retrieving update date: {e}")
         return None
 
+
 def update_vortex():
     repo_url = "https://raw.githubusercontent.com/Louchat/VORTEX/main/VORTEX.py"
-    local_file = "VORTEX.py"
-
+    
+    # Récupérer le dossier où est le script courant (VORTEX.py)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Créer le dossier Update_Vortex dans ce dossier
+    update_folder = os.path.join(current_dir, "Update_Vortex")
+    if not os.path.exists(update_folder):
+        os.makedirs(update_folder)
+    
+    # Chemin complet du fichier à écrire dans Update_Vortex
+    local_file = os.path.join(update_folder, "VORTEX.py")
+    
     choice = input("Do you want to install the latest version of VORTEX? (y/n): ").strip().lower()
     if choice != 'y':
         print("Update cancelled.")
         return
-
+    
     try:
         print("Downloading the latest version...")
         response = requests.get(repo_url)
         response.raise_for_status()
-
+        
         with open(local_file, 'w', encoding='utf-8') as f:
             f.write(response.text)
-
-        print("Update completed successfully! Please restart the program to apply changes.")
+        
+        print(f"Update successfully downloaded in: {local_file}")
+        print("Restart the program to apply changes.")
     except Exception as e:
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "8.0"  # Your current version, update as needed
+    version = "9.3"  # Your current version, update as needed
     last_update = get_latest_commit_date()
     print(f"Current VORTEX version: {version}")
     if last_update:
@@ -305,8 +317,8 @@ def main_menu():
         print(Fore.YELLOW + "5: Ping")
         print(Fore.YELLOW + "6: Manage second screen")
         print(Fore.YELLOW + "7: Execute CMD command")
-        print(Fore.RED + "8: Check latest github update")
-        print("9: Close")
+        print(Fore.YELLOW + "8: Check latest github update")
+        print(Fore.RED + "9: Close")
                 
 
         main_choice = input(Fore.CYAN + "Enter your choice (1-8): ")
@@ -431,8 +443,7 @@ def main_menu():
         elif main_choice == '8':
             clear_console()
             show_version_and_update()
-            clear_console()
-            break
+            
 
 
         elif main_choice == '5':  # Option "Ping"
