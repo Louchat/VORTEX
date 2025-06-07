@@ -104,7 +104,7 @@ def update_vortex():
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "1.0"  # Your current version, update as needed
+    version = "8.0"  # Your current version, update as needed
     last_update = get_latest_commit_date()
     print(f"Current VORTEX version: {version}")
     if last_update:
@@ -305,8 +305,8 @@ def main_menu():
         print(Fore.YELLOW + "5: Ping")
         print(Fore.YELLOW + "6: Manage second screen")
         print(Fore.YELLOW + "7: Execute CMD command")
-        print(Fore.RED + "8: Close")
-        print("9. Voir la dernière mise à jour GitHub")
+        print(Fore.RED + "8: Check latest github update")
+        print("9: Close")
                 
 
         main_choice = input(Fore.CYAN + "Enter your choice (1-8): ")
@@ -362,7 +362,7 @@ def main_menu():
                 else:
                     print(Fore.RED + "Invalid choice.")
 
-        elif main_choice == '8':
+        elif main_choice == '9':
             print(Fore.RED + "Closing the program...")
             os.system('cls')  # Vider l'écran (facultatif)
             sys.exit()
@@ -428,9 +428,11 @@ def main_menu():
                 else:
                     print(Fore.YELLOW + f"Unknown command: {cmd}")
 
-        elif main_choice == '9':
+        elif main_choice == '8':
             clear_console()
             show_version_and_update()
+            clear_console()
+            break
 
 
         elif main_choice == '5':  # Option "Ping"
