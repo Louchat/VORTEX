@@ -469,7 +469,7 @@ def main_menu():
                     '2': fr"C:\Users\{useer}\Documents\Bloxstrap-v2.9.0.exe",
                     '3': fr"C:\Users\{useer}\AppData\Roaming\Spotify\Spotify.exe",
                     '5': fr"C:\Users\{useer}\AppData\Local\Programs\Lunar Client\Lunar Client.exe",
-                    '6': fr"C:\Users\{useer}\AppData\Local\Programs\Opera\opera.exe",
+                    '6': r"C:\Program Files\Opera\opera.exe",
                     '7': fr"C:\Users\{useer}\AppData\Local\Programs\Google\Chrome\Application\chrome.exe",
                     '8': fr"C:\Users\{useer}\AppData\Local\Programs\deezer-desktop\Deezer.exe"
                 }
@@ -485,7 +485,6 @@ def main_menu():
                             stderr=subprocess.DEVNULL,
                             creationflags=subprocess.CREATE_NO_WINDOW
                         )
-
                     else:
                         print(Fore.RED + "Discord not found.")
                 elif choice in apps:
