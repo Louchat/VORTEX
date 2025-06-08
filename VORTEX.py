@@ -3,7 +3,6 @@
 # Developed by Louchatfluff
 # Open-source on GitHub: https://github.com/Louchat/VORTEX
 # ==============================================================
-
 import ctypes
 import time
 import shutil
@@ -22,25 +21,20 @@ from colorama import Fore, init
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
-
 # Initialize colorama
 init(autoreset=True)
-
 
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
         return False
-
 if not is_admin():
     print(Fore.RED + "Restarting as admin...")
     params = ' '.join([f'"{arg}"' for arg in sys.argv])
     ctypes.windll.shell32.ShellExecuteW(
         None, "runas", sys.executable, params, None, 1)
     sys.exit()
-
-
 # Ask for the Windows username
 os.system('title [LOCKED]:')
 useer = os.getlogin()
@@ -54,8 +48,6 @@ def loading_animation(text="Searching for an user", duration=3):
         time.sleep(0.2)
     sys.stdout.write("\r" + " " * (len(text) + 4) + "\r")  # clean line
 
-
-
 def load_user():
     if os.path.exists("user.lock"):
         with open("user.lock", "r") as file:
@@ -68,27 +60,20 @@ def save_user(username):
 
 def verify_user():
     saved_user = load_user()
-
     if saved_user:
         print(Fore.GREEN + f"User already verified: {saved_user}")
         time.sleep(0.6)
         return saved_user
-
     user = getpass.getuser()
-
     loading_animation()
-
     print(Fore.GREEN + f"User found: {user}")
     time.sleep(0.3)
     print(Fore.YELLOW + "Is it correct?")
     print("1. Yes (unlock automatically)")
     print("2. No (unlock manually)")
-
     choice = input(Fore.RED + "Enter your choice (1/2): ").strip()
-
     while choice not in ["1", "2"]:
         choice = input("Invalid input. Please enter 1 or 2: ").strip()
-
     if choice == "1":
         print("Unlocking automatically...")
         time.sleep(1)
@@ -99,23 +84,14 @@ def verify_user():
         print(f"Manual unlock for user: {manual_user}")
         save_user(manual_user)
         return manual_user
-
 # Example usage
 current_user = verify_user()
-
-
-
-
-
 os.system('title [UNLOCKED]                                                                          // WE LOVE CHEATING //') #Renome la fenetre par // WE LOVE CHEATING //
-
-
 
 def apply_update():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     update_file = os.path.join(current_dir, "Update_Vortex", "VORTEX.py")
     target_file = os.path.join(current_dir, "VORTEX.py")
-
     if os.path.exists(update_file):
         try:
             shutil.copy2(update_file, target_file)
@@ -137,7 +113,6 @@ def get_github_version():
         print(Fore.RED + f"Error fetching GitHub version: {e}")
         return None
 
-
 def get_latest_commit_date():
     # GitHub API to get the latest commit on the VORTEX.py file
     api_url = "https://api.github.com/repos/Louchat/VORTEX/commits?path=VORTEX.py&page=1&per_page=1"
@@ -155,48 +130,35 @@ def get_latest_commit_date():
         print(f"Error retrieving update date: {e}")
         return None
 
-
 def update_vortex():
     repo_url = "https://raw.githubusercontent.com/Louchat/VORTEX/main/VORTEX.py"
-    
     # Get the current script's directory (VORTEX.py)
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    
     # Create Update_Vortex folder if not exist
     update_folder = os.path.join(current_dir, "Update_Vortex")
     if not os.path.exists(update_folder):
         os.makedirs(update_folder)
-    
     # Full path of the downloaded update file
     local_file = os.path.join(update_folder, "VORTEX.py")
-    
     choice = input("Do you want to install the latest version of VORTEX? (y/n): ").strip().lower()
     if choice != 'y':
         print("Update cancelled.")
         return
-    
     try:
         print("Downloading the latest version...")
         response = requests.get(repo_url)
         response.raise_for_status()
-
         with open(local_file, 'w', encoding='utf-8', newline='\n') as f:
             f.write(response.text)
-
         print(f"Update successfully downloaded in: {local_file}")
-
         apply_update()  # <-- ici on applique la mise à jour
-
         print("Restart the program to apply changes.")
     except Exception as e:
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "10.7"  # Local version
+    version = "10.8"  # Local version
     print(f"Current VORTEX version: {version}")
-
-    
-
     last_update = get_latest_commit_date()
     if last_update:
         print(f"Last GitHub update date: {last_update}")
@@ -213,8 +175,8 @@ def show_version_and_update():
         print(Fore.RED + "Could not check for the latest version.")
     update_vortex()
 
-
 def execute_command():
+
     while True:
         print(Fore.YELLOW + "Enter the CMD command you want to execute:")
         cmd = input(Fore.CYAN + "> ")
@@ -232,8 +194,8 @@ def execute_command():
             print(Fore.MAGENTA + "Command has been executed.")
         except Exception as e:
             print(Fore.RED + f"Error executing command: {e}")
-
         # Proposer le choix entre exécuter une autre commande ou revenir au menu principal
+
         while True:
             print(Fore.YELLOW + "\nChoose an option:")
             print(Fore.YELLOW + "1: Execute another command")
@@ -247,12 +209,10 @@ def execute_command():
             else:
                 print(Fore.RED + "Invalid option, please choose 1 or 2.")
 
-
 def disconnect_second_screen():
     print(Fore.YELLOW + "Disconnecting second screen...")
     subprocess.run(['DisplaySwitch.exe', '/external'])  # switch to single screen (to optimise graphics)
     print(Fore.GREEN + "Second screen disconnected.")
-
 
 def reconnect_second_screen():
     print(Fore.YELLOW + "Reconnecting second screen...")
@@ -260,14 +220,13 @@ def reconnect_second_screen():
     print(Fore.GREEN + "Second screen reconnected in extended mode.")
 
 def manage_second_screen():
+
     while True:
         print(Fore.GREEN + "What do you want to do with the second screen?")
         print(Fore.YELLOW + "1: Disconnect second screen")
         print(Fore.YELLOW + "2: Reconnect second screen")
         print(Fore.YELLOW + "3: Back to main menu")
-
         choice = input(Fore.CYAN + "Enter your choice (1-3): ")
-
         if choice == '1':
             disconnect_second_screen()  # Fonction that disconect second screen
             break  # Return to main menu after the action
@@ -283,7 +242,6 @@ def manage_second_screen():
 def clean_disk():  # Clean TEMP folder without using Disk Cleanup
     temp_dir = os.getenv('TEMP')  # Get TEMP folder path
     print(Fore.YELLOW + f"Cleaning files in {temp_dir}...")
-
     try:
         # Delete all files and folders in the TEMP directory %TEMP%
         for root, dirs, files in os.walk(temp_dir, topdown=False):
@@ -299,33 +257,27 @@ def clean_disk():  # Clean TEMP folder without using Disk Cleanup
                     shutil.rmtree(dir_path)
                 except Exception as e:
                     print(Fore.RED + f"Error deleting directory {dir_path}: {e}")
-
         print(Fore.GREEN + "Temporary files deleted successfully.")
-        
         # Kill explorer.exe process using taskkill
         print(Fore.YELLOW + "Killing explorer.exe process...")
         subprocess.run("taskkill /f /im explorer.exe", shell=True)
         print(Fore.GREEN + "Explorer.exe has been terminated.")
-
     except Exception as e:
         print(Fore.RED + f"An error occurred while cleaning TEMP files: {e}")
-
-
 # Function to set console window opacity
+
 def set_opacity(opacity):
     hwnd = ctypes.windll.kernel32.GetConsoleWindow()
     alpha = int(255 * (opacity / 100))
     ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, 0, alpha, 0x00000002)
-
 # Function to hide the console and wait for reactivation
+
 def wait_for_reactivation():
-
     hwnd = ctypes.windll.kernel32.GetConsoleWindow()
-
     # Hide window instead of minimizing
     win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
-
     print(Fore.CYAN + "\n[!] Program is now running in the background. Press '/' to reopen the menu.")
+
     while True:
         if keyboard.is_pressed('/'):
             # Restore the window
@@ -335,8 +287,8 @@ def wait_for_reactivation():
             time.sleep(0.5)
             return
         time.sleep(0.1)
-
 # Function to find Discord executable path
+
 def find_discord_exe(useer):
     base_path = fr"C:\Users\{useer}\AppData\Local\Discord"
     for folder in os.listdir(base_path):
@@ -345,11 +297,9 @@ def find_discord_exe(useer):
             if os.path.isfile(path):
                 return path
     return None
-
 # Function to download and install an application
-def install_app(app_name):
 
-    
+def install_app(app_name):
     apps = {
         "chrome": {
             "url": "https://dl.google.com/chrome/install/375.126/chrome_installer.exe",
@@ -392,14 +342,12 @@ def install_app(app_name):
             "file": "VencordInstaller.exe"
         }
     }
-
     if app_name in apps:
         data = apps[app_name]
         print(Fore.CYAN + f"Downloading {app_name} installer...")
         urllib.request.urlretrieve(data["url"], data["file"])
         print(Fore.CYAN + "Download complete!")
         print(Fore.CYAN + f"Downloaded file size: {os.path.getsize(data['file'])} bytes")
-
         try:
             print(Fore.CYAN + "Launching installer...")
             subprocess.Popen(
@@ -415,8 +363,6 @@ def install_app(app_name):
             print(Fore.RED + f"Failed to run installer: {e}")
     else:
         print(Fore.RED + "Unknown app.")
-
-
 # Set window opacity
 set_opacity(72)
 clear_console()
@@ -426,7 +372,9 @@ print(Fore.RED + "THIS SOFTWARE IS FREE, IF YOU PAYED FOR IT: PLEASE RETURN IT")
 time.sleep(5)
 clear_console()
 # Main menu
+
 def main_menu():
+
     while True:
         print(Fore.GREEN + "What do u want to do:")
         print(Fore.YELLOW + "1: Open apps")
@@ -438,17 +386,12 @@ def main_menu():
         print(Fore.YELLOW + "7: Execute CMD command")
         print(Fore.YELLOW + "8: Check latest github update")
         print(Fore.RED + "9: Restart")
-                
-
         main_choice = input(Fore.CYAN + "Enter your choice (1-9): ")
-
-        
-        
         if main_choice == '6':  # Option to disconnect second screen
             manage_second_screen()
-
         elif main_choice == '1':
             # Menu to open apps
+
             while True:
                 print(Fore.YELLOW + "\nChoose an app to open:")
                 print(Fore.CYAN + "1: Riot")
@@ -459,21 +402,19 @@ def main_menu():
                 print(Fore.CYAN + "6: Opera")
                 print(Fore.CYAN + "7: Chrome")
                 print(Fore.CYAN + "8: Deezer")
-                print(Fore.YELLOW + "9: Menu")
-                
-
-                choice = input(Fore.CYAN + "Enter your choice (1-9): ")
-
+                print(Fore.CYAN + "9: Explorer")
+                print(Fore.YELLOW + "10: Menu")
+                choice = input(Fore.CYAN + "Enter your choice (1-10): ")
                 apps = {
                     '1': r"C:\Riot Games\Riot Client\RiotClientServices.exe",
                     '2': fr"C:\Users\{useer}\Documents\Bloxstrap-v2.9.0.exe",
                     '3': fr"C:\Users\{useer}\AppData\Roaming\Spotify\Spotify.exe",
                     '5': fr"C:\Users\{useer}\AppData\Local\Programs\Lunar Client\Lunar Client.exe",
-                    '6': r"C:\Program Files\Opera\opera.exe",
+                    '6': fr"C:\Users\{useer}\AppData\Local\Programs\Opera\opera.exe",
                     '7': fr"C:\Users\{useer}\AppData\Local\Programs\Google\Chrome\Application\chrome.exe",
-                    '8': fr"C:\Users\{useer}\AppData\Local\Programs\deezer-desktop\Deezer.exe"
+                    '8': fr"C:\Users\{useer}\AppData\Local\Programs\deezer-desktop\Deezer.exe",
+                    '9': fr"c:\Documents"
                 }
-
                 if choice == '4':
                     # Ouvre Discord
                     discord_path = find_discord_exe(useer)
@@ -490,14 +431,12 @@ def main_menu():
                 elif choice in apps:
                     print(Fore.GREEN + f"Opening app {choice}...")
                     subprocess.Popen([apps[choice]])
-
-                elif choice == '9':                                                         #Fonction pr que le menu fonctione ce ptit FDP
+                elif choice == '10':                                                         #Fonction pr que le menu fonctione ce ptit FDP
                     print(Fore.YELLOW + "Going back to main menu...\n")
                     os.system('cls' if os.name == 'nt' else 'clear')
                     break
                 else:
                     print(Fore.RED + "Invalid choice.")
-
         elif main_choice == '9':
             print(Fore.RED + "Restarting the program...")
             python = sys.executable
@@ -505,13 +444,11 @@ def main_menu():
             sys.exit(0)
         elif main_choice == "7":    
             execute_command()
-
         elif main_choice == '2':
             # App optimization
             print(Fore.GREEN + "Optimising your system...")
             clean_disk()
             processes = ["steam.exe", "opera.exe", "sunshine.exe", "sunshinesvc.exe", "Spotify.exe", "discord.exe", "rainmeter.exe", "deezer.exe"]
-
             for proc in processes:
                 print(Fore.CYAN + f"Trying to close {proc}...")
                 exit_code = os.system(f"taskkill /f /im {proc}")
@@ -520,11 +457,9 @@ def main_menu():
                 else:
                     print(Fore.GREEN + f"[OK] {proc} closed successfully.")
                 time.sleep(0.5)
-
             print(Fore.GREEN + "Done.\n")
             print(Fore.YELLOW + "Press Enter to continue...")
             keyboard.read_event()  # Wait for user input before continuing
-
             clear_console() 
         elif main_choice == '3':
             # Menu to install apps
@@ -540,24 +475,17 @@ def main_menu():
                 '9': 'discord',
                 '10': 'vencord'
             }
-
             # Affichage dynamique :
             print(Fore.YELLOW + "Choose an app to install:")
             for num, app in apps_map.items():
                 print(Fore.CYAN + f"{num}: {app.capitalize()}")
-
             choice = input(Fore.CYAN + "Enter your choice (1-10): ").strip()
             install_app(apps_map.get(choice, ''))
-
-
         elif main_choice == '4':
             # Minimize the program
             wait_for_reactivation()
-
-
         elif main_choice == 'admin.clear':
             clear_console()
-
         elif main_choice == 'admin':
             clear_console()
             print(Fore.RED + "You entered Admin commands tools:")
@@ -574,27 +502,21 @@ def main_menu():
                     break
                 else:
                     print(Fore.YELLOW + f"Unknown command: {cmd}")
-
         elif main_choice == '8':
             clear_console()
             show_version_and_update()
-            
-
-
         elif main_choice == '5':  # Ping option
             print(Fore.YELLOW + "Enter the website URL you want to visit:")
             website = input(Fore.CYAN + "Enter URL (example: https://www.google.com): ").strip()
-
             # Open the website in the default browser
             if website:
                 print(Fore.GREEN + f"Opening website: {website}")
                 webbrowser.open(website)
             else:
                 print(Fore.RED + "Invalid URL. Please try again.")
-
         else:
             print(Fore.RED + "Invalid choice.")
-
 # Lancer le menu principal
+
 while True:
     main_menu()
