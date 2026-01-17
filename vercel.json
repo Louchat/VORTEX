@@ -1,8 +1,8 @@
 {
   "routes": [
     {
-      "src": "/vortex.ps1",
-      "dest": "/public/vortex.ps1"
+      "src": "/run",
+      "dest": "/public/run.ps1"
     }
   ]
 }
