@@ -3,6 +3,7 @@ Vortex is an open-source console based script that can open and installs apps an
 
 ## installation :
 **Open Powershell as administrator**
+‎ 
 **Run the command:**
 ```bash
 irm https://vortex-stable.vercel.app/run.ps1 | iex
