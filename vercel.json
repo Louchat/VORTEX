@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "headers": [
+  "routes": [
     {
-      "source": "/public/run.ps1",
+      "src": "/run.ps1",
       "headers": [
         { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Cache-Control", "value": "no-store" }
-      ]
+      ],
+      "dest": "/public/run.ps1"
     }
   ]
+}
