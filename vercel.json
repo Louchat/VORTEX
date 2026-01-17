@@ -9,11 +9,4 @@
         { "key": "Cache-Control", "value": "no-store" }
       ]
     }
-  ],
-  "routes": [
-    {
-      "src": "/run.ps1",
-      "dest": "/public/run.ps1"
-    }
   ]
-}
