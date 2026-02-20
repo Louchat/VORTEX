@@ -157,7 +157,7 @@ def update_vortex():
         print(f"Error during update: {e}")
 
 def show_version_and_update():
-    version = "10.8"  # Local version
+    version = "11"  # Local version
     print(f"Current VORTEX version: {version}")
     last_update = get_latest_commit_date()
     if last_update:
@@ -520,3 +520,4 @@ def main_menu():
 
 while True:
     main_menu()
+
